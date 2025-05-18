@@ -1,9 +1,12 @@
 package com.example.UserService.UserService.service;
 
+import com.example.UserService.UserService.entity.Hotel;
+import com.example.UserService.UserService.entity.Rating;
 import com.example.UserService.UserService.entity.User;
 import com.example.UserService.UserService.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
 import java.util.Optional;
@@ -14,6 +17,9 @@ public class UserService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private RestTemplate restTemplate;
 
     // Create User
     public User createUser(User user) {
@@ -47,7 +53,33 @@ public class UserService {
 
     // Get User by ID
     public User getUserById(String uid) {
-        return userRepository.findById(uid)
+        User user = userRepository.findById(uid)
                 .orElseThrow(() -> new RuntimeException("User not found with id: " + uid));
+
+        //Now we have got the name, email and about of the user.
+        //Now we will fetch the user ratings of the given user id with help of the rating service.
+        // Fetch user ratings from RatingService
+        String ratingServiceUrl = "http://RATING-SERVICE/ratings/user/" + uid;
+        try {
+            Rating[] ratingsArray = restTemplate.getForObject(ratingServiceUrl, Rating[].class);
+            List<Rating> ratings = ratingsArray != null ? List.of(ratingsArray) : List.of();
+
+            // Fetch hotel details for each rating
+            for (Rating rating : ratings) {
+                String hotelServiceUrl = "http://HOTEL-SERVICE/hotels/" + rating.getHotelId();
+                try {
+                    Hotel hotel = restTemplate.getForObject(hotelServiceUrl, Hotel.class);
+                    rating.setHotel(hotel);
+                } catch (Exception e) {
+                    rating.setHotel(null); // Handle HotelService failure gracefully
+                }
+            }
+
+            user.setRatings(ratings);
+        } catch (Exception e) {
+            user.setRatings(List.of()); // Handle RatingService failure gracefully
+        }
+
+        return user;
     }
 }

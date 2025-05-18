@@ -1,39 +1,20 @@
 package com.example.UserService.UserService.entity;
 
-import org.springframework.data.annotation.Id;
-import org.springframework.data.annotation.Transient;
+public class Hotel {
 
-import java.util.ArrayList;
-import java.util.List;
-
-public class User {
-
-    @Id
     private String uid;
-
     private String name;
-    private String email;
+    private String location;
     private String about;
 
-    @Transient
-    private List<Rating> ratings = new ArrayList<>();
-
-    public User() {
+    public Hotel() {
     }
 
-    public User(String uid, String name, String email, String about) {
+    public Hotel(String uid, String name, String location, String about) {
         this.uid = uid;
         this.name = name;
-        this.email = email;
+        this.location = location;
         this.about = about;
-    }
-
-    public void setRatings(List<Rating> ratings) {
-        this.ratings = ratings;
-    }
-
-    public List<Rating> getRatings() {
-        return ratings;
     }
 
     public String getUid() {
@@ -52,12 +33,12 @@ public class User {
         this.name = name;
     }
 
-    public String getEmail() {
-        return email;
+    public String getLocation() {
+        return location;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public void setLocation(String location) {
+        this.location = location;
     }
 
     public String getAbout() {
@@ -70,10 +51,10 @@ public class User {
 
     @Override
     public String toString() {
-        return "User{" +
+        return "Hotel{" +
                 "uid='" + uid + '\'' +
                 ", name='" + name + '\'' +
-                ", email='" + email + '\'' +
+                ", location='" + location + '\'' +
                 ", about='" + about + '\'' +
                 '}';
     }
