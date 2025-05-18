@@ -1,6 +1,6 @@
-package com.example.UserService.UserService.feignClient;
+package com.example.RatingService.RatingService.feignClient;
 
-import com.example.UserService.UserService.entity.Hotel;
+import com.example.RatingService.RatingService.entity.Hotel;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
