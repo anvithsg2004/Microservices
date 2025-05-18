@@ -3,6 +3,7 @@ package com.example.UserService.UserService.service;
 import com.example.UserService.UserService.entity.Hotel;
 import com.example.UserService.UserService.entity.Rating;
 import com.example.UserService.UserService.entity.User;
+import com.example.UserService.UserService.feignClient.HotelService;
 import com.example.UserService.UserService.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,6 +21,9 @@ public class UserService {
 
     @Autowired
     private RestTemplate restTemplate;
+
+    @Autowired
+    private HotelService hotelService;
 
     // Create User
     public User createUser(User user) {
@@ -66,9 +70,10 @@ public class UserService {
 
             // Fetch hotel details for each rating
             for (Rating rating : ratings) {
-                String hotelServiceUrl = "http://HOTEL-SERVICE/hotels/" + rating.getHotelId();
+                // String hotelServiceUrl = "http://HOTEL-SERVICE/hotels/" + rating.getHotelId();
                 try {
-                    Hotel hotel = restTemplate.getForObject(hotelServiceUrl, Hotel.class);
+                    // Hotel hotel = restTemplate.getForObject(hotelServiceUrl, Hotel.class);
+                    Hotel hotel = hotelService.getHotelById(rating.getHotelId());
                     rating.setHotel(hotel);
                 } catch (Exception e) {
                     rating.setHotel(null); // Handle HotelService failure gracefully
